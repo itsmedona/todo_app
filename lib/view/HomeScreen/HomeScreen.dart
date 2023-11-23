@@ -15,13 +15,22 @@ class _HomescreenState extends State<Homescreen> {
   final dateController = TextEditingController();
   List<NoteModel> myNoteList = [
     /////seperate model class
-    NoteModel(title: " ", date: " ", description: "  "),
+    NoteModel(title: " ", date: " ", description: "  ", color: 3),
   ];
+  List<Color> MyColors = [
+    Colors.red,
+    Colors.lightGreen,
+    Colors.purpleAccent,
+    Colors.orangeAccent
+  ];
+  String value = "";
+  int? selectedIndex;
+  List<int> selectedList = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("ToDo"),
+        title: Text("ToDo App...."),
         backgroundColor: Color.fromARGB(255, 8, 227, 125),
       ),
       body: Padding(
@@ -40,11 +49,20 @@ class _HomescreenState extends State<Homescreen> {
                 },
                 title: myNoteList[index].title,
                 description: myNoteList[index].description,
-                date: myNoteList[index].date,
-              )),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
+                date: myNoteList[index].date, 
+                color: MyColors[myNoteList[index].color],
+                onDeletetap: () {
+                myNoteList.removeAt(index);
+                setState(() {});
+              },
+              onedittap: () {
+                value = "Update";
+                BottomSheet(context);
+                nameController.text = myNoteList[index].title;
+                desController.text = myNoteList[index].description;
+                dateController.text = myNoteList[index].date;
+  })))))
+      /*floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
             context: context,
@@ -187,7 +205,7 @@ class _HomescreenState extends State<Homescreen> {
           );
         },
         child: Icon(Icons.add),
-      ),
+      ),*/
     );
   }
 }
