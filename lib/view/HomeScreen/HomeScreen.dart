@@ -38,9 +38,9 @@ class _HomescreenState extends State<Homescreen> {
         child: ListView.builder(
           itemCount: myNoteList.length,
           itemBuilder: (context, index) => SizedBox(
-              height: 200,
-              width: 300,
-              child: HomeScreenWidget(
+            height: 200,
+            width: 300,
+            child: HomeScreenWidget(
                 //created widget
                 onDeletetap: () {
                   myNoteList.removeAt(
@@ -49,20 +49,20 @@ class _HomescreenState extends State<Homescreen> {
                 },
                 title: myNoteList[index].title,
                 description: myNoteList[index].description,
-                date: myNoteList[index].date, 
+                date: myNoteList[index].date,
                 color: MyColors[myNoteList[index].color],
-                onDeletetap: () {
-                myNoteList.removeAt(index);
-                setState(() {});
-              },
-              onedittap: () {
-                value = "Update";
-                BottomSheet(context);
-                nameController.text = myNoteList[index].title;
-                desController.text = myNoteList[index].description;
-                dateController.text = myNoteList[index].date;
-  })))))
-      /*floatingActionButton: FloatingActionButton(
+                onedittap: () {
+                  value = "Update";
+
+                  nameController.text = myNoteList[index].title;
+                  desController.text = myNoteList[index].description;
+                  //dateController.text = myNoteList[index].date;
+                }),
+          ),
+        ),
+      ),
+    );
+    /*floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
             context: context,
@@ -206,6 +206,5 @@ class _HomescreenState extends State<Homescreen> {
         },
         child: Icon(Icons.add),
       ),*/
-    );
   }
 }
