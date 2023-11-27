@@ -14,54 +14,144 @@ class _HomescreenState extends State<Homescreen> {
   final desController = TextEditingController();
   final dateController = TextEditingController();
   List<NoteModel> myNoteList = [
-    /////seperate model class
-    NoteModel(title: " ", date: " ", description: "  ", color: 3),
+    // Notemodel(title: "title", date: "date", description: "des", color: 3)
   ];
-  List<Color> MyColors = [
-    Colors.red,
-    Colors.lightGreen,
+  List<Color> myColors = [
+    Colors.redAccent,
+    Colors.lightBlueAccent,
+    Colors.lightGreenAccent,
     Colors.purpleAccent,
-    Colors.orangeAccent
   ];
   String value = "";
+  //int? checkvalue;
   int? selectedIndex;
   List<int> selectedList = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("ToDo App...."),
-        backgroundColor: Color.fromARGB(255, 8, 227, 125),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: ListView.builder(
-          itemCount: myNoteList.length,
-          itemBuilder: (context, index) => SizedBox(
-            height: 200,
-            width: 300,
-            child: HomeScreenWidget(
-                //created widget
-                onDeletetap: () {
-                  myNoteList.removeAt(
-                      index); //for deleting it from the widget declaration and here
-                  setState(() {});
-                },
-                title: myNoteList[index].title,
-                description: myNoteList[index].description,
-                date: myNoteList[index].date,
-                color: MyColors[myNoteList[index].color],
-                onedittap: () {
-                  value = "Update";
-
-                  nameController.text = myNoteList[index].title;
-                  desController.text = myNoteList[index].description;
-                  //dateController.text = myNoteList[index].date;
-                }),
+        appBar: AppBar(
+            title: Text("ToDo App....."),
+            backgroundColor: Colors.deepPurpleAccent),
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: ListView.separated(
+            separatorBuilder: (context, index) => SizedBox(height: 20),
+            itemCount: myNoteList.length,
+            itemBuilder: (context, index) => HomeScreenWidget(
+              color: myColors[myNoteList[index].color],
+              title: myNoteList[index].title,
+              description: myNoteList[index].description,
+              date: myNoteList[index].date,
+              onDeletetap: () {
+                myNoteList.removeAt(index);
+                setState(() {});
+              },
+              onedittap: () {
+                value = "Update";
+                bottomSheet(context);
+                nameController.text = myNoteList[index].title;
+                desController.text = myNoteList[index].description;
+                dateController.text = myNoteList[index].date!;
+              },
+            ),
           ),
         ),
-      ),
-    );
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              value = "submit";
+              selectedIndex = null;
+              bottomSheet(context);
+            },
+            child: Icon(Icons.add)));
+  }
+
+  Future<dynamic> bottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (context, CsetState) => Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(), hintText: "Title"),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: desController,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: "Description"),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: dateController,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(), hintText: "Date"),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: List.generate(
+                          myColors.length,
+                          (index) => InkWell(
+                            onTap: () {
+                              selectedIndex = index;
+
+                              CsetState(() {});
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  border: selectedIndex == index
+                                      ? Border.all(
+                                          color:
+                                              myColors[index].withOpacity(.5),
+                                          width: 5)
+                                      : null,
+                                  color: myColors[index].withOpacity(.4),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            myNoteList.add(NoteModel(
+                              title: nameController.text,
+                              date: dateController.text,
+                              description: desController.text,
+                              color: selectedIndex!,
+                            ));
+                            setState(() {});
+                            print(nameController.text);
+                            print(desController.text);
+                            nameController.clear();
+                            desController.clear();
+                            dateController.clear();
+                            Navigator.pop(context);
+                          },
+                          child: Text("Save"))
+                    ],
+                  ));
+        });
+  }
+}
     /*floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
@@ -206,5 +296,3 @@ class _HomescreenState extends State<Homescreen> {
         },
         child: Icon(Icons.add),
       ),*/
-  }
-}
