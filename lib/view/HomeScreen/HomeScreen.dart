@@ -64,7 +64,6 @@ class _HomescreenState extends State<Homescreen> {
             },
             child: Icon(Icons.add)));
   }
-
   Future<dynamic> bottomSheet(BuildContext context) {
     return showModalBottomSheet(
         context: context,
@@ -124,7 +123,6 @@ class _HomescreenState extends State<Homescreen> {
                           (index) => InkWell(
                             onTap: () {
                               selectedIndex = index;
-
                               CsetState(() {});
                             },
                             child: Padding(
