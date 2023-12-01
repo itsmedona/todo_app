@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class HomeScreenWidget extends StatefulWidget {
-   HomeScreenWidget(
+  HomeScreenWidget(
       {super.key,
       required this.title,
       required this.description,
@@ -43,11 +43,12 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                 ),
                 Row(
                   children: [
-                    InkWell(onTap: widget.onDeletetap, child: Icon(Icons.delete)),
+                    InkWell(
+                        onTap: widget.onDeletetap, child: Icon(Icons.delete)),
                     SizedBox(
                       width: 20,
                     ),
-                    InkWell(onTap: widget.onedittap,child: Icon(Icons.edit)),
+                    InkWell(onTap: widget.onedittap, child: Icon(Icons.edit)),
                   ],
                 )
               ],
@@ -78,9 +79,9 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                   right: 20,
                   child: Text(
                     "",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  )),
-            ],
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),)
+                    ),
+                    ],
           )
         ],
       ),

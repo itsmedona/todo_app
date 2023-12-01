@@ -90,10 +90,29 @@ class _HomescreenState extends State<Homescreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      TextField(
+                      TextFormField(
                         controller: dateController,
                         decoration: InputDecoration(
-                            border: OutlineInputBorder(), hintText: "Date"),
+                            border: OutlineInputBorder(),
+                            hintText: "Date",
+                            suffixIcon: InkWell(
+                              onTap: () {
+                                showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2101),
+                                ).then((pickedDate) {
+                                  if (pickedDate != null) {
+                                    dateController.text = pickedDate
+                                        .toLocal()
+                                        .toString()
+                                        .split('')[0];
+                                  }
+                                });
+                              },
+                              child: Icon(Icons.calendar_today),
+                            )),
                       ),
                       SizedBox(
                         height: 10,
