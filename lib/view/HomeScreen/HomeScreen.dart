@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_app/controller/Database/Database.dart';
 import 'package:to_do_app/model/NoteModel/NoteModel.dart';
 import 'package:to_do_app/view/HomeScreen/HomeScreen_Widget/HomeScreen_Widget.dart';
 
@@ -26,7 +27,20 @@ class _HomescreenState extends State<Homescreen> {
   //int? checkvalue;
   int? selectedIndex;
   List<int> selectedList = [];
+
+  final dbNotes = DatabaseNotes();
+
   @override
+  void initState() {
+    super.initState();
+    _loadNotes();
+  }
+
+  Future<void> _loadNotes() async {
+    myNoteList = await dbNotes.getNotes();
+    setState(() {});
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -64,6 +78,7 @@ class _HomescreenState extends State<Homescreen> {
             },
             child: Icon(Icons.add)));
   }
+
   Future<dynamic> bottomSheet(BuildContext context) {
     return showModalBottomSheet(
         context: context,
@@ -148,16 +163,19 @@ class _HomescreenState extends State<Homescreen> {
                         height: 8,
                       ),
                       ElevatedButton(
-                          onPressed: () {
-                            myNoteList.add(NoteModel(
+                          onPressed: () async {
+                            dbNotes.insertNote(NoteModel(
                               title: nameController.text,
                               date: dateController.text,
                               description: desController.text,
                               color: selectedIndex!,
                             ));
-                            setState(() {});
-                            print(nameController.text);
-                            print(desController.text);
+                            await _loadNotes();
+
+
+                            //setState(() {});
+//print(nameController.text);
+                            //print(desController.text);
                             nameController.clear();
                             desController.clear();
                             dateController.clear();

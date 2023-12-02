@@ -1,4 +1,5 @@
 import 'package:sqflite/sqflite.dart';
+import 'package:to_do_app/model/NoteModel/NoteModel.dart';
 
 class DatabaseNotes {
   static Database? _database;
@@ -20,4 +21,28 @@ class DatabaseNotes {
       },
     );
   }
+
+  Future<void> insertNote(NoteModel note) async {
+    final Database db = await database;
+    await db.insert(
+      'notes',
+      note.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<List<NoteModel>> getNotes() async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('notes');
+    return List.generate(maps.length, (i) {
+      return NoteModel(
+        id: maps[i]['id'],
+        title: maps[i]['title'],
+        description: maps[i]['description'],
+        color: maps[i]['color'],
+      );
+    });
+  }
 }
+
+
