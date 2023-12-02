@@ -165,6 +165,7 @@ class _HomescreenState extends State<Homescreen> {
                       ElevatedButton(
                           onPressed: () async {
                             dbNotes.insertNote(NoteModel(
+                               id: null,
                               title: nameController.text,
                               date: dateController.text,
                               description: desController.text,
