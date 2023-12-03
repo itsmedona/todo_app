@@ -18,25 +18,32 @@ class _MySplashState extends State<MySplash> {
           context,
           MaterialPageRoute(
               builder: (context) => HomeScreenWidget(
-                  title: '', description: '', date: '', color: null)));
+                title: '',
+                description: '',
+                date: '',
+                color: Colors.pinkAccent,
+              )));
     });
     super.initState();
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.deepPurpleAccent,
-    body: Column(
-      children: [SafeArea(child: Padding(padding: 
-      EdgeInsets.all(10),
-      child: Container(
-        height: 55,
-        width: 270,
-        child: Image.asset(""),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsetsDirectional.all(50),
+              child: Container(
+                child: Image.asset("asset/images/notes.png"),
+                height: 55,
+                width: 270,
+              ),
+            ),
+          ),
+        ],
       ),
-      ),
-      ),
-      ],
-    ),
     );
   }
 }
