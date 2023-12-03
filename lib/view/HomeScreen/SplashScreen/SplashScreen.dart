@@ -1,9 +1,20 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:to_do_app/view/HomeScreen/HomeScreen_Widget/HomeScreen_Widget.dart';
+import 'package:lottie/lottie.dart';
 
-class MySplash extends StatefulWidget {
+class MySplash extends StatelessWidget {
+  const MySplash({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Lottie.asset('asset/animations/Animation - 1701246492847.json'),
+      ),
+    );
+  }
+}
+
+/*class MySplash extends StatefulWidget {
   const MySplash({super.key});
 
   @override
@@ -47,3 +58,4 @@ class _MySplashState extends State<MySplash> {
     );
   }
 }
+*/
