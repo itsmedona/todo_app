@@ -79,9 +79,9 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                   right: 20,
                   child: Text(
                     "",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),)
-                    ),
-                    ],
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  )),
+            ],
           )
         ],
       ),

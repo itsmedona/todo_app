@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 class MySplash extends StatelessWidget {
@@ -14,7 +14,7 @@ class MySplash extends StatelessWidget {
   }
 }
 
-/*class MySplash extends StatefulWidget {
+class MySplash extends StatefulWidget {
   const MySplash({super.key});
 
   @override

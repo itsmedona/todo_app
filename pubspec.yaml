@@ -31,7 +31,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
-  lottie: ^2.7.0
+  
   path: ^1.8.3
   path_provider: ^2.1.1
   sqflite: ^2.3.0
@@ -53,7 +53,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - asset/images/notes.png
-    - assets/animations/
+  #  - assets/animations/
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

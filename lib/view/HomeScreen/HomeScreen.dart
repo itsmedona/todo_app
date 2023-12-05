@@ -14,6 +14,9 @@ class _HomescreenState extends State<Homescreen> {
   final nameController = TextEditingController();
   final desController = TextEditingController();
   final dateController = TextEditingController();
+  final updateNameController = TextEditingController();
+  final updateDesController = TextEditingController();
+  final updateDateController = TextEditingController();
   List<NoteModel> myNoteList = [
     // Notemodel(title: "title", date: "date", description: "des", color: 3)
   ];
@@ -107,26 +110,27 @@ class _HomescreenState extends State<Homescreen> {
                       TextFormField(
                         controller: dateController,
                         decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: "Date",
-                            suffixIcon: InkWell(
-                              onTap: () {
-                                showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime(2101),
-                                ).then((pickedDate) {
-                                  if (pickedDate != null) {
-                                    dateController.text = pickedDate
-                                        .toLocal()
-                                        .toString()
-                                        .split('')[0];
-                                  }
-                                });
-                              },
-                              child: Icon(Icons.calendar_today),
-                            )),
+                          border: OutlineInputBorder(),
+                          hintText: "Date",
+                          suffixIcon: InkWell(
+                            onTap: () {
+                              showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2050),
+                              ).then((pickedDate) {
+                                if (pickedDate != null) {
+                                  dateController.text = pickedDate
+                                      .toLocal()
+                                      .toString()
+                                      .split(' ')[0];
+                                }
+                              });
+                            },
+                            child: Icon(Icons.calendar_today),
+                          ),
+                        ),
                       ),
                       SizedBox(
                         height: 10,
@@ -165,7 +169,7 @@ class _HomescreenState extends State<Homescreen> {
                       ElevatedButton(
                           onPressed: () async {
                             dbNotes.insertNote(NoteModel(
-                               id: null,
+                              id: null,
                               title: nameController.text,
                               date: dateController.text,
                               description: desController.text,
@@ -173,9 +177,8 @@ class _HomescreenState extends State<Homescreen> {
                             ));
                             await _loadNotes();
 
-
                             //setState(() {});
-//print(nameController.text);
+                            //print(nameController.text);
                             //print(desController.text);
                             nameController.clear();
                             desController.clear();

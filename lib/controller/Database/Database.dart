@@ -40,6 +40,7 @@ class DatabaseNotes {
         id: maps[i]['id'],
         title: maps[i]['title'],
         description: maps[i]['description'],
+        date: maps[i]['date'],
         color: maps[i]['color'],
       );
     });
