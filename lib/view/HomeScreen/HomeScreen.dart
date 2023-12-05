@@ -109,6 +109,7 @@ class _HomescreenState extends State<Homescreen> {
                       ),
                       TextFormField(
                         controller: dateController,
+                        style: TextStyle(color: Colors.black),
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: "Date",
@@ -168,22 +169,24 @@ class _HomescreenState extends State<Homescreen> {
                       ),
                       ElevatedButton(
                           onPressed: () async {
-                            dbNotes.insertNote(NoteModel(
-                              id: null,
-                              title: nameController.text,
-                              date: dateController.text,
-                              description: desController.text,
-                              color: selectedIndex!,
-                            ));
-                            await _loadNotes();
+                            if (selectedIndex != null) {
+                              dbNotes.insertNote(NoteModel(
+                                id: null,
+                                title: nameController.text,
+                                date: dateController.text,
+                                description: desController.text,
+                                color: selectedIndex!,
+                              ));
+                              await _loadNotes();
 
-                            //setState(() {});
-                            //print(nameController.text);
-                            //print(desController.text);
-                            nameController.clear();
-                            desController.clear();
-                            dateController.clear();
-                            Navigator.pop(context);
+                              //setState(() {});
+                              //print(nameController.text);
+                              //print(desController.text);
+                              nameController.clear();
+                              desController.clear();
+                              dateController.clear();
+                              Navigator.pop(context);
+                            }
                           },
                           child: Text("Save"))
                     ],
