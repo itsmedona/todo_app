@@ -40,7 +40,7 @@ class _HomescreenState extends State<Homescreen> {
   }
 
   Future<void> _loadNotes() async {
-    myNoteList = await dbNotes.getNotes();
+    myNoteList = await getNotes();
     setState(() {});
   }
 
@@ -54,23 +54,25 @@ class _HomescreenState extends State<Homescreen> {
           child: ListView.separated(
             separatorBuilder: (context, index) => SizedBox(height: 20),
             itemCount: myNoteList.length,
-            itemBuilder: (context, index) => HomeScreenWidget(
-              color: myColors[myNoteList[index].color],
-              title: myNoteList[index].title,
-              description: myNoteList[index].description,
-              date: myNoteList[index].date,
-              onDeletetap: () {
-                myNoteList.removeAt(index);
-                setState(() {});
-              },
-              onedittap: () {
-                value = "Update";
-                bottomSheet(context);
-                nameController.text = myNoteList[index].title;
-                desController.text = myNoteList[index].description;
-                dateController.text = myNoteList[index].date!;
-              },
-            ),
+            itemBuilder: (context, index) {
+              return HomeScreenWidget(
+                color: myColors[myNoteList[index].color],
+                title: myNoteList[index].title,
+                description: myNoteList[index].description,
+                date: myNoteList[index].date!,
+                onDeletetap: () {
+                  myNoteList.removeAt(index);
+                  setState(() {});
+                },
+                onedittap: () {
+                  value = "Update";
+                  bottomSheet(context);
+                  nameController.text = myNoteList[index].title;
+                  desController.text = myNoteList[index].description;
+                  dateController.text = myNoteList[index].date!;
+                },
+              );
+            },
           ),
         ),
         floatingActionButton: FloatingActionButton(
@@ -193,6 +195,8 @@ class _HomescreenState extends State<Homescreen> {
                   ));
         });
   }
+
+  getNotes() {}
 }
     /*floatingActionButton: FloatingActionButton(
         onPressed: () {

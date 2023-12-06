@@ -12,7 +12,7 @@ class HomeScreenWidget extends StatefulWidget {
       required this.color});
   final String title;
   final String description;
-  final String? date;
+  final String date;
   final VoidCallback? onDeletetap;
   final VoidCallback? onedittap;
   Color color;
@@ -78,7 +78,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
                   bottom: 10,
                   right: 20,
                   child: Text(
-                    "",
+                    widget.date,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   )),
             ],
