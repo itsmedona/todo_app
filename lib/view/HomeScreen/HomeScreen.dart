@@ -1,8 +1,321 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/controller/Database/Database.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:intl/intl.dart';
 import 'package:to_do_app/model/NoteModel/NoteModel.dart';
 import 'package:to_do_app/view/HomeScreen/HomeScreen_Widget/HomeScreen_Widget.dart';
 
+class Homescreen extends StatefulWidget {
+  const Homescreen({super.key});
+
+  @override
+  State<Homescreen> createState() => _HomescreenState();
+}
+
+class _HomescreenState extends State<Homescreen> {
+  var box = Hive.box<NoteModel>('myBox');
+  final nameController = TextEditingController();
+  final desController = TextEditingController();
+  final dateController = TextEditingController();
+  final updatenameController = TextEditingController();
+  final updatedesController = TextEditingController();
+  final updatedateController = TextEditingController();
+  List<NoteModel> myNoteList = [];
+  List<Color> myColors = [
+    Colors.redAccent,
+    Colors.lightBlueAccent,
+    Colors.lightGreenAccent,
+    Colors.purpleAccent,
+  ];
+
+  int? selectedIndex;
+  var keyList = [];
+
+  @override
+  void initState() {
+    keyList = box.keys.toList();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Color.fromARGB(255, 15, 52, 101),
+        appBar: AppBar(
+          elevation: 0,
+          title: Text(
+            "My Notes...!!",
+            style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+          ),
+          backgroundColor: Colors.blueGrey,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: ListView.separated(
+            separatorBuilder: (context, index) => SizedBox(height: 20),
+            itemCount: keyList.length,
+            itemBuilder: (context, index) => HomeScreenWidget(
+              color: myColors[box.get(keyList[index])!.color],
+              title: box.get(keyList[index])!.title,
+              description: box.get(keyList[index])!.description,
+              date: box.get(keyList[index])!.date,
+              ondeletetap: () {
+                box.delete(keyList.removeAt(index));
+                setState(() {});
+              },
+              onsharetap: () {},
+              onedittap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return StatefulBuilder(
+                        builder: (context, CsetState) => Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                TextField(
+                                  controller: updatenameController,
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: "New Title"),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                TextField(
+                                  controller: updatedesController,
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: "New Description"),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                TextField(
+                                  controller: updatedateController,
+                                  decoration: InputDecoration(
+                                      icon: Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 0),
+                                        child: Icon(Icons.calendar_today),
+                                      ), //icon of text field
+                                      labelText: "New Date"),
+                                  readOnly:
+                                      true, //set it true, so that user will not able to edit text
+                                  onTap: () async {
+                                    DateTime? pickedDate = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(
+                                            2000), //DateTime.now() - not to allow to choose before today.
+                                        lastDate: DateTime(2101));
+
+                                    if (pickedDate != null) {
+                                      print(
+                                          "pickedDate: $pickedDate"); //pickedDate output format => 2021-03-10 00:00:00.000
+                                      String formattedDate =
+                                          DateFormat('yyyy-MM-dd')
+                                              .format(pickedDate);
+                                      print("formattedDate: $formattedDate");
+                                      setState(() {
+                                        updatedateController.text =
+                                            formattedDate; //set output date to TextField value.
+                                      });
+                                    } else {
+                                      SnackBar(
+                                        content: Text("Select Date"),
+                                      );
+                                    }
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: List.generate(
+                                    myColors.length,
+                                    (index) => InkWell(
+                                      onTap: () {
+                                        selectedIndex = index;
+
+                                        CsetState(() {});
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          height: 50,
+                                          width: 50,
+                                          decoration: BoxDecoration(
+                                            border: selectedIndex == index
+                                                ? Border.all(
+                                                    color: myColors[index]
+                                                        .withOpacity(.5),
+                                                    width: 5)
+                                                : null,
+                                            color:
+                                                myColors[index].withOpacity(.4),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                ElevatedButton(
+                                    onPressed: () {
+                                      box.put(
+                                          keyList[index],
+                                          NoteModel(
+                                              title: updatenameController.text,
+                                              date: updatedateController.text,
+                                              description:
+                                                  updatedesController.text,
+                                              color: selectedIndex!));
+                                      setState(() {});
+                                      keyList =
+                                          box.keys.toList(); // get keys from db
+                                      print("update key list: $keyList");
+
+                                      updatenameController.clear();
+                                      updatedesController.clear();
+                                      updatedateController.clear();
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("Save"))
+                              ],
+                            ));
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+            backgroundColor: Color.fromARGB(210, 121, 79, 45),
+            onPressed: () {
+              selectedIndex = null;
+              bottomSheet(context);
+            },
+            child: Icon(Icons.add)));
+  }
+
+  Future<dynamic> bottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (context, C2setState) => Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(), hintText: "Title"),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: desController,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: "Description"),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: dateController,
+                        decoration: InputDecoration(
+                            icon: Padding(
+                              padding: const EdgeInsets.only(right: 0),
+                              child: Icon(Icons.calendar_today),
+                            ),
+                            labelText: "Date"),
+                        readOnly: true,
+                        onTap: () async {
+                          DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2101));
+
+                          if (pickedDate != null) {
+                            print("pickedDate: $pickedDate");
+                            String formattedDate =
+                                DateFormat('yyyy-MM-dd').format(pickedDate);
+                            print("formattedDate: $formattedDate");
+                            setState(() {
+                              dateController.text = formattedDate;
+                            });
+                          } else {
+                            SnackBar(
+                              content: Text("Select Date"),
+                            );
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: List.generate(
+                          myColors.length,
+                          (index) => InkWell(
+                            onTap: () {
+                              selectedIndex = index;
+
+                              C2setState(() {});
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  border: selectedIndex == index
+                                      ? Border.all(
+                                          color:
+                                              myColors[index].withOpacity(.5),
+                                          width: 5)
+                                      : null,
+                                  color: myColors[index].withOpacity(.4),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            box.add(NoteModel(
+                                title: nameController.text,
+                                date: dateController.text,
+                                description: desController.text,
+                                color: selectedIndex!));
+                            setState(() {});
+                            keyList = box.keys.toList(); // get keys from db
+                            print("key list: $keyList");
+
+                            nameController.clear();
+                            desController.clear();
+                            dateController.clear();
+                            Navigator.pop(context);
+                          },
+                          child: Text("Save"))
+                    ],
+                  ));
+        });
+  }
+}
+/*
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
 
@@ -171,24 +484,24 @@ class _HomescreenState extends State<Homescreen> {
                       ),
                       ElevatedButton(
                           onPressed: () async {
-                            if (selectedIndex != null) {
-                              dbNotes.insertNote(NoteModel(
-                                id: null,
-                                title: nameController.text,
-                                date: dateController.text,
-                                description: desController.text,
-                                color: selectedIndex!,
-                              ));
-                              await _loadNotes();
+                            //if (selectedIndex != null) {
+                            await dbNotes.insertNote(NoteModel(
+                              id: null,
+                              title: nameController.text,
+                              date: dateController.text,
+                              description: desController.text,
+                              color: selectedIndex!,
+                            ));
+                            await _loadNotes();
 
-                              //setState(() {});
-                              //print(nameController.text);
-                              //print(desController.text);
-                              nameController.clear();
-                              desController.clear();
-                              dateController.clear();
-                              Navigator.pop(context);
-                            }
+                            setState(() {});
+                            //print(nameController.text);
+                            //print(desController.text);
+                            nameController.clear();
+                            desController.clear();
+                            dateController.clear();
+                            Navigator.pop(context);
+                            // }
                           },
                           child: Text("Save"))
                     ],
@@ -197,148 +510,4 @@ class _HomescreenState extends State<Homescreen> {
   }
 
   getNotes() {}
-}
-    /*floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) => Container(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Color(0xffEBE3D5)),
-                        child: TextField(
-                          controller: nameController,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(), hintText: "Title"),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 50, vertical: 50),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Color(0xffEBE3D5)),
-                      child: TextField(
-                        controller: desController,
-                        decoration: InputDecoration(
-                            border: InputBorder.none, hintText: "Description"),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Color(0xffEBE3D5)),
-                      child: TextField(
-                        controller: dateController,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(), hintText: "date"),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        InkWell(
-                            child: Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 107, 230, 111),
-                              borderRadius: BorderRadius.circular(20)),
-                        )),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        InkWell(
-                            child: Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 243, 173, 62),
-                              borderRadius: BorderRadius.circular(20)),
-                        )),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        InkWell(
-                            child: Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 123, 218, 237),
-                              borderRadius: BorderRadius.circular(20)),
-                        )),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        InkWell(
-                            child: Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 236, 146, 202),
-                              borderRadius: BorderRadius.circular(20)),
-                        )),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        InkWell(
-                            child: Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 240, 96, 96),
-                              borderRadius: BorderRadius.circular(20)),
-                        )),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        InkWell(
-                            child: Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 172, 76, 227),
-                              borderRadius: BorderRadius.circular(20)),
-                        )),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          myNoteList.add(NoteModel(
-                              title: nameController.text,
-                              date: dateController.text,
-                              description: desController.text));
-                          setState(() {});
-                          nameController.clear();
-                          desController.clear();
-                          dateController.clear();
-                          Navigator.pop(context);
-                        },
-                        child: Text("Save"))
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-        child: Icon(Icons.add),
-      ),*/
+}*/

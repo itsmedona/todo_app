@@ -1,39 +1,22 @@
-/*import 'package:flutter/material.dart';
+import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:to_do_app/view/HomeScreen/HomeScreen.dart';
 
-class MySplash extends StatelessWidget {
-  const MySplash({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Lottie.asset('asset/animations/Animation - 1701246492847.json'),
-      ),
-    );
-  }
-}
-
-class MySplash extends StatefulWidget {
-  const MySplash({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<MySplash> createState() => _MySplashState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _MySplashState extends State<MySplash> {
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Timer(Duration(seconds: 4), () {
+    Timer(Duration(seconds: 5), () {
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomeScreenWidget(
-                title: '',
-                description: '',
-                date: '',
-                color: Colors.pinkAccent,
-              )));
+          context, MaterialPageRoute(builder: (context) => Homescreen()));
     });
     super.initState();
   }
@@ -42,20 +25,13 @@ class _MySplashState extends State<MySplash> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          SafeArea(
-            child: Padding(
-              padding: EdgeInsetsDirectional.all(50),
-              child: Container(
-                child: Image.asset("asset/images/notes.png"),
-                height: 55,
-                width: 270,
-              ),
-            ),
+          Center(
+            child: SizedBox(child: Lottie.asset("asset/animations/notes.json")),
           ),
         ],
       ),
     );
   }
 }
-*/
