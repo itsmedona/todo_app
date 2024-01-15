@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
+import 'package:share/share.dart';
 import 'package:to_do_app/model/NoteModel/NoteModel.dart';
 import 'package:to_do_app/view/HomeScreen/HomeScreen_Widget/HomeScreen_Widget.dart';
 
@@ -63,7 +64,16 @@ class _HomescreenState extends State<Homescreen> {
                 box.delete(keyList.removeAt(index));
                 setState(() {});
               },
-              onsharetap: () {},
+              onsharetap: () {
+                String noteText = "Title: ${box.get(keyList[index])!.title}\n"
+                    "Description: ${box.get(keyList[index])!.description}\n"
+                    "Date: ${box.get(keyList[index])!.date}";
+
+                Share.share(
+                  noteText,
+                  subject: "My Note",
+                );
+              },
               onedittap: () {
                 showModalBottomSheet(
                   context: context,
